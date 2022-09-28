@@ -1,0 +1,9 @@
+{
+	"name": "tejtraining",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c03bf6d3-291d-4471-9a8f-744172e65eda",
+		"tenantId": "909c3dde-d2f9-4045-a7f2-9af08ddc920d"
+	}
+}
