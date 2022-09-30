@@ -23,11 +23,21 @@
 						"referenceName": "AzureBlobStorage1",
 						"type": "LinkedServiceReference"
 					}
+				},
+				{
+					"dataset": {
+						"referenceName": "moviesopCSV",
+						"type": "DatasetReference"
+					},
+					"name": "MoviesCountByYear"
 				}
 			],
 			"transformations": [
 				{
 					"name": "ExtractYearTiltle"
+				},
+				{
+					"name": "RatingbyYear"
 				}
 			],
 			"scriptLines": [
@@ -41,13 +51,21 @@
 				"     ignoreNoFilesFound: false) ~> Moviesv1",
 				"Moviesv1 derive(year = toInteger(trim(right(title,6),'()')),",
 				"          title = toString(left(title,length(title)-6))) ~> ExtractYearTiltle",
+				"ExtractYearTiltle aggregate(groupBy(year),",
+				"     MoviesCnt = count(year)) ~> RatingbyYear",
 				"ExtractYearTiltle sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['aggoutput'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     outputAssertFailedRows: true,",
-				"     partitionBy('hash', 1)) ~> MoviesClean"
+				"     partitionBy('hash', 1)) ~> MoviesClean",
+				"RatingbyYear sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['MoviesCountByYear'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> MoviesCountByYear"
 			]
 		}
 	}
